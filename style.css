@@ -136,6 +136,10 @@ a:visited {
   opacity: 0;
 }
 
+.form__btn {
+  display: none;
+}
+
 .form__row {
   display: flex;
   align-items: center;
@@ -213,4 +217,37 @@ a:visited {
 }
 .cycling-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
+}
+
+.btn {
+  background: none;
+  border: none;
+  color: var(--color-light--1);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s;
+}
+
+.delete__workout:hover,
+.delete__workout:active {
+  color: var(--color-light--2);
+}
+
+.delete__workout {
+  grid-column: -1 / 5;
+  justify-self: end;
+}
+
+.edit__workout {
+  grid-column: -2/5;
+  justify-self: end;
+}
+
+.edit__workout:hover,
+.edit__workout:active {
+  font-size: 1.8rem;
+}
+
+.hidden {
+  display: none;
 }
