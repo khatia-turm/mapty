@@ -14,17 +14,17 @@ Core (from course)
 
 Adding:
 
-- Edit/delete single workout
+- Edit/delete single workout ✔️
 - delete all workouts at once
-- Restore objects from localStorage (not just plain JSON)
+- Restore objects from localStorage (not just plain JSON) ✔️
 - Custom error + confirmation messages
 - Fit map to show workouts (bounds zooming with Leaflet)
 - Reverse geocoding (fetch city/street names)
 
 Tech Stack
 
-- Vanilla JavaScript (ES6+)
-- Leaflet.js for map rendering
-- LocalStorage API for persistence
-- OpenWeather API for weather data
-- OpenCage API for reverse geocoding
+📌 Vanilla JavaScript (ES6+)
+📌 Leaflet.js for map rendering
+📌 LocalStorage API for persistence
+📌 OpenWeather API for weather data
+📌 OpenCage API for reverse geocoding
