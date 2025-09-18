@@ -136,7 +136,7 @@ class App {
     });
   }
 
-  _showForm(mapE = null) {
+  _showForm(mapE) {
     if (mapE) this.#mapEvent = mapE;
     form.classList.remove('hidden');
     inputDistance.focus();
@@ -158,16 +158,58 @@ class App {
   }
 
   _newWorkout(e) {
+    e.preventDefault();
     const validInputs = (...inputs) =>
       inputs.every(inp => Number.isFinite(inp));
     const allPositive = (...inputs) => inputs.every(inp => inp > 0);
-    e.preventDefault();
 
     // get data from form
 
     const type = inputType.value;
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
+
+    // editing mode
+    if (this.#editingWorkout) {
+      this.#editingWorkout.distance = distance;
+      this.#editingWorkout.duration = duration;
+      if (this.#editingWorkout.type === 'running') {
+        const cadence = +inputCadence.value;
+        if (
+          !validInputs(distance, duration, cadence) ||
+          !allPositive(distance, duration, cadence)
+        )
+          return alert('input have to be positive numbers!');
+        this.#editingWorkout.cadence = cadence;
+        console.log(this.#editingWorkout);
+        this.#editingWorkout.calcPace();
+      }
+
+      if (this.#editingWorkout.type === 'cycling') {
+        const elevation = +inputElevation.value;
+        if (
+          !validInputs(distance, duration, elevation) ||
+          !allPositive(distance, duration)
+        )
+          return alert('input have to be positive numbers!');
+        this.#editingWorkout.elevationGain = elevation;
+        this.#editingWorkout.calcSpeed();
+      }
+      // update despription and popup
+      this.#editingWorkout._setDescription();
+
+      if (this.#editingWorkout.marker) {
+        this.#editingWorkout.marker.setPopupContent(
+          `${this.#editingWorkout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'} ${
+            this.#editingWorkout.description
+          }`
+        );
+      }
+      this._setLocalStorage();
+      this.#editingWorkout = null;
+      location.reload();
+      return;
+    }
     const { lat, lng } = this.#mapEvent.latlng;
     let workout;
     // check if data is valid
@@ -183,7 +225,6 @@ class App {
         return alert('input have to be positive numbers!');
 
       workout = new Running([lat, lng], distance, duration, cadence);
-      this.#workouts.push(workout);
     }
     // if cycling create cycling object
     if (type === 'cycling') {
@@ -302,16 +343,50 @@ class App {
     const workoutsToStore = this.#workouts.map(({ marker, ...rest }) => rest);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(workoutsToStore));
   }
+  // _getLocalStorage() {
+  //   const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
+  //   if (!data) return;
+
+  //   this.#workouts = data;
+
+  //   this.#workouts.forEach(work => {
+  //     this._renderWorkout(work);
+  //   });
+  // }
   _getLocalStorage() {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!data) return;
 
-    this.#workouts = data;
+    this.#workouts = data.map(obj => {
+      let inst;
+      if (obj.type === 'running') {
+        // create a proper Running instance (constructor will set pace/description)
+        inst = new Running(obj.coords, obj.distance, obj.duration, obj.cadence);
+      } else if (obj.type === 'cycling') {
+        inst = new Cycling(
+          obj.coords,
+          obj.distance,
+          obj.duration,
+          obj.elevationGain
+        );
+      } else {
+        inst = new Workout(obj.coords, obj.distance, obj.duration);
+      }
 
-    this.#workouts.forEach(work => {
-      this._renderWorkout(work);
+      // restore saved meta (id, date) and recalc description with the original date
+      inst.id = obj.id;
+      inst.date = new Date(obj.date);
+      if (inst.type === 'running') inst.calcPace();
+      if (inst.type === 'cycling') inst.calcSpeed();
+      inst._setDescription();
+
+      return inst;
     });
+
+    // render list (and markers will be added when map loads)
+    this.#workouts.forEach(work => this._renderWorkout(work));
   }
+
   _deleteWorkout(e) {
     const workoutEl = e.target.closest('.workout');
     if (!workoutEl) return;
@@ -344,7 +419,7 @@ class App {
     inputDuration.value = workout.duration;
     inputCadence.value = workout.cadence || '';
     inputElevation.value = workout.elevationGain || '';
-    form.addEventListener('submit', this._newWorkout.bind(this));
+    // form.addEventListener('submit', this._newWorkout.bind(this));
   }
 
   reset() {
