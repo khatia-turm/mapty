@@ -15,11 +15,11 @@ Core (from course)
 Adding:
 
 - Edit/delete single workout ✔️
-- delete all workouts at once
+- delete all workouts at once ✔️
 - Restore objects from localStorage (not just plain JSON) ✔️
-- Custom error + confirmation messages
-- Fit map to show workouts (bounds zooming with Leaflet)
-- Reverse geocoding (fetch city/street names)
+- Custom error ✔️
+- Fit map to show workouts (bounds zooming with Leaflet) 🔜
+- Reverse geocoding (fetch city/street names) 🔜
 
 Tech Stack
 
