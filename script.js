@@ -93,6 +93,8 @@ class App {
       if (e.target.classList.contains('edit__workout')) this._editWorkout(e);
     });
     resetBtn.addEventListener('click', this._reset.bind(this));
+
+    if (this.#workouts.length > 0) resetBtn.classList.remove('hidden');
   }
 
   _getPosition() {
