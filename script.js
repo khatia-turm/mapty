@@ -16,21 +16,9 @@ class Workout {
   }
 
   _setDescription() {
-    // prettier ignore
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
+    // prettier-ignore
+    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
     this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${
       months[this.date.getMonth()]
     } ${this.date.getDate()}`;
@@ -78,6 +66,7 @@ const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 const deleteWorkout = document.querySelector('.delete__workout');
 const editWorkout = document.querySelector('.edit__workout');
+const resetBtn = document.querySelector('.btn--reset');
 class App {
   #map;
   #mapZoomLevel = 13;
@@ -103,6 +92,7 @@ class App {
     containerWorkouts.addEventListener('click', e => {
       if (e.target.classList.contains('edit__workout')) this._editWorkout(e);
     });
+    resetBtn.addEventListener('click', this._reset.bind(this));
   }
 
   _getPosition() {
@@ -250,6 +240,8 @@ class App {
     // Set local storage to all workouts
     this._setLocalStorage();
     // display marker
+
+    resetBtn.classList.remove('hidden');
   }
 
   _renderWorkoutMarker(workout) {
@@ -422,9 +414,18 @@ class App {
     // form.addEventListener('submit', this._newWorkout.bind(this));
   }
 
-  reset() {
-    localStorage.removeItem('workout');
-    location.reload();
+  _reset() {
+    // localStorage.removeItem('workout');
+    // location.reload();
+    if (this.#workouts.length === 0) return;
+    const confirmReset = confirm(
+      'Are you sure you want to reset? This action cannot be undone.'
+    );
+    if (confirmReset) {
+      this.#workouts = [];
+      localStorage.removeItem(STORAGE_KEY);
+      location.reload();
+    }
   }
 }
 
