@@ -268,3 +268,40 @@ a:visited {
 .hidden {
   display: none;
 }
+
+.validation-popup {
+  background-color: var(--color-dark--1);
+  color: var(--color-light--2);
+  padding: 1rem 2rem;
+  border-radius: 0.3rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  font-size: 1.4rem;
+  z-index: 1000;
+  margin: 1rem auto;
+  text-align: center;
+  width: 80%;
+  animation: fadeIn 0.5s forwards, fadeOut 3s 2.5s forwards;
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
