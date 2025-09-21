@@ -147,6 +147,13 @@ class App {
     inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
   }
 
+  _validation() {
+    const html = `<div class="validation-popup">
+    <p>Please enter positive numbers only!</p>
+  </div>`;
+    form.insertAdjacentHTML('afterend', html);
+  }
+
   _newWorkout(e) {
     e.preventDefault();
     const validInputs = (...inputs) =>
@@ -169,9 +176,8 @@ class App {
           !validInputs(distance, duration, cadence) ||
           !allPositive(distance, duration, cadence)
         )
-          return alert('input have to be positive numbers!');
+          return this._validation();
         this.#editingWorkout.cadence = cadence;
-        console.log(this.#editingWorkout);
         this.#editingWorkout.calcPace();
       }
 
@@ -181,7 +187,7 @@ class App {
           !validInputs(distance, duration, elevation) ||
           !allPositive(distance, duration)
         )
-          return alert('input have to be positive numbers!');
+          return this._validation();
         this.#editingWorkout.elevationGain = elevation;
         this.#editingWorkout.calcSpeed();
       }
@@ -212,7 +218,7 @@ class App {
         !validInputs(distance, duration, cadence) ||
         !allPositive(distance, duration, cadence)
       )
-        return alert('input have to be positive numbers!');
+        return this._validation();
 
       workout = new Running([lat, lng], distance, duration, cadence);
     }
@@ -224,7 +230,8 @@ class App {
         !validInputs(distance, duration, elevation) ||
         !allPositive(distance, duration)
       )
-        return alert('input have to be positive numbers!');
+        return this._validation();
+
       workout = new Cycling([lat, lng], distance, duration, elevation);
     }
     // add new obj to workout arr
@@ -426,6 +433,8 @@ class App {
       localStorage.removeItem(STORAGE_KEY);
       location.reload();
     }
+
+    resetBtn.classList.add('hidden');
   }
 }
 
